@@ -15,9 +15,9 @@ use App\Models\student;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/users', [UserController::class, 'create']);
-Route::get('/', [StudentController::class, 'index']);
-Route::get('create', [StudentController::class, 'create'])->name('create');
+
 Route::get('/', function () {
     return view('index');
 });
+Route::get('create', [StudentController::class, 'create'])->name('create');
+Route::post('store', [StudentController::class, 'store'])->name('store');
