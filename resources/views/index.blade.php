@@ -36,7 +36,30 @@
               </tr>
             </thead>
             <tbody>
+              @foreach($students as $student)
+              <tr>
+                <th scope="row">{{$loop-> iteration}}</th>
+                <td>{{$student-> firstname}}</td>
+                <td>{{$student-> lastname}}</td>
+                <td>{{$student-> email}}</td>
+                <td>
+                    <div class="btn-group">
+                      <a href="{{ route('edit', $student->id) }}">
+                        <button class="btn btn-md btn-success me-1 p-1">edit</button>
+                      </a>
 
+                    <form action="{{route('delete')}}" method="POST">
+                        @method('DELETE')
+                        @csrf
+                        <input type="text" name="student_id" value="{{ $student->id }}" hidden>
+                      <button class="btn btn-md btn-danger  p-1">delete</button>
+                </form>
+
+
+                    </div>
+                </td>
+              </tr>
+              @endforeach
             </tbody>
           </table>
       </div>

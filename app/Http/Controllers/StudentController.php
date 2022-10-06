@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\student;
 use App\Http\Requests\StorestudentRequest;
 use App\Http\Requests\UpdatestudentRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 
 class StudentController extends Controller
 {
@@ -15,7 +18,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = student::all();
+        return view('index',compact('students')); 
     }
 
     /**
@@ -36,11 +40,18 @@ class StudentController extends Controller
      */
     public function store(StorestudentRequest $request)
     {
-        $student = new student;
-        $student -> firstname = $request->firstname;
-        $student -> lastname = $request->lastname;
-        $student -> email = $request->email;
-        $student -> save();
+
+        student::create($request->only([
+            'firstname',
+            'lastname',
+            'email',
+        ]));
+
+        // $student = new student;
+        // $student->firstname = $request->firstname;
+        // $student->lastname = $request->lastname;
+        // $student->email = $request->email;
+        // $student->save();
         return "success";
     }
 
@@ -73,9 +84,10 @@ class StudentController extends Controller
      * @param  \App\Models\student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatestudentRequest $request, student $student)
+    public function update($student_id)
     {
-        //
+        $student = student::find($student_id);
+        return view('edit',compact('student'));
     }
 
     /**
@@ -84,8 +96,21 @@ class StudentController extends Controller
      * @param  \App\Models\student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(student $student)
+    public function destroy(Request $request)
     {
-        //
+        $student = student::find($request->student_id);
+        $student->delete();
+        return Redirect::to('/');
+    }
+
+
+    public function editStore(StorestudentRequest $request)
+    {
+       $student = student::find($request->student_id);
+        $student->firstname = $request->firstname;
+        $student->lastname = $request->lastname;
+        $student->email = $request->email;
+        $student->save();
+        return Redirect::to('/');
     }
 }
